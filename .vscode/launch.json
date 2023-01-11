@@ -15,8 +15,12 @@
             ],
             "program": "${workspaceFolder}\\index.ts",
             "outFiles": [
-                "${workspaceFolder}/**/*.js"
+                "${workspaceFolder}/**/*.js",
             ],
+            "resolveSourceMapLocations": [
+                "${workspaceFolder}/**",
+                "!**/node_modules/**"
+              ]
             
         }
     ]

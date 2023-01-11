@@ -18,8 +18,12 @@ const solve = (lines: Array<string>): number => {
     const instructions: Array<Array<string>> = getInstructions(lines);
     instructions.forEach((instruction: Array<string>) => {
         const [count, source, destination] = instruction;
-        const crate = crates.get(+count)
-
+        const crate = crates.get(+source)
+        //@ts-ignore
+        // let x = crate.splice(0,7);
+         //@ts-ignore
+        crates.set(+destination,[...Array.from(crate.splice(0,7)),...crates.get(+destination)]);
+       
     });
     return 0;
 
@@ -46,7 +50,7 @@ const getInstructions = (list: Array<string>): Array<Array<string>> => {
     const instructions :Array<Array<string>> = [];
     list.forEach((instructionCollection: string, index: number) => {
         if (!instructionCollection.includes("move")) return;
-        instructions.push(instructionCollection.replace(/\D/g,'').split(''));
+        instructions.push(instructionCollection.replace(/\D/g,'').split(/\d+/g));
     //   instructionsMap.set(+instructions[0],[+instructions[1],+instructions[2]])
     });
     return instructions;

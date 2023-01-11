@@ -1,5 +1,3 @@
-import { create } from "domain";
-import { get } from "http";
 const avoidLetters: Array<string> = [" ", "[", "]"];
 let i: number = 1;
 
@@ -8,24 +6,26 @@ const getIndex = (index: number): number => {
     return Math.trunc(index / 4) + 1;
 }
 const parse = (input: string): Array<string> => {
-    let lines: any = input.split("\r\n");
-    // .map(((pair:string)=> pair.split(/(,|-)/g).filter((section:string)=> section != "-" && section != ",")));
-    return lines;
+    return input.split("\r\n");
+     
 }
 
-const solve = (lines: Array<string>): number => {
+const solve = (lines: Array<string>): string => {
+    let result: Array<string> = [];
     const crates: Map<number, Array<string>> = getCrates(lines);
     const instructions: Array<Array<string>> = getInstructions(lines);
     instructions.forEach((instruction: Array<string>) => {
         const [count, source, destination] = instruction;
         const crate = crates.get(+source)
-        //@ts-ignore
-        // let x = crate.splice(0,7);
          //@ts-ignore
-        crates.set(+destination,[...Array.from(crate.splice(0,7)),...crates.get(+destination)]);
+        crates.set(+destination,[...crate.splice(0,+count).reverse(),...crates.get(+destination)]);
        
     });
-    return 0;
+    new Map([...crates].sort()).forEach((values :Array<string>, index : number )=>{
+        if(values.length != 0)
+            result.push(values[0]);
+    })
+    return result.join("");
 
 }
 
@@ -35,8 +35,8 @@ const getCrates = (list: Array<string>): Map<number, Array<string>> => {
     list.forEach((crateCollection: string, index: number) => {
         if (!crateCollection.includes(avoidLetters[2])) return;
         crateCollection.split('').forEach((crate: string, index: number) => {
-            let position: number = getIndex(index);
             if (avoidLetters.includes(crate)) return;
+            let position: number = getIndex(index);
             if (!cratesMap.has(position)) cratesMap.set(position, [])
             //@ts-ignore
             cratesMap.set(position, [...Array.from(cratesMap.get(position)), ...crate.split('')])
@@ -46,12 +46,14 @@ const getCrates = (list: Array<string>): Map<number, Array<string>> => {
 }
 
 const getInstructions = (list: Array<string>): Array<Array<string>> => {
-    // const instructionsMap: Map<number, Array<number>> = new Map();
     const instructions :Array<Array<string>> = [];
     list.forEach((instructionCollection: string, index: number) => {
         if (!instructionCollection.includes("move")) return;
-        instructions.push(instructionCollection.replace(/\D/g,'').split(/\d+/g));
-    //   instructionsMap.set(+instructions[0],[+instructions[1],+instructions[2]])
+        //@ts-ignore
+       let instructionValues: Array<string> = instructionCollection.split(/(\d+)/g).filter((str:string)=>{
+            if(str.match(/^[0-9]+$/)) return str;
+        }); 
+        instructions.push(instructionValues);
     });
     return instructions;
 }

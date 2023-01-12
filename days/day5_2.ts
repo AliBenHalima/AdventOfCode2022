@@ -39,7 +39,7 @@ const getCrates = (list: Array<string>): Map<number, Array<string>> => {
             let position: number = getIndex(index);
             if (!cratesMap.has(position)) cratesMap.set(position, [])
             //@ts-ignore
-            cratesMap.set(position, [...Array.from(cratesMap.get(position).reverse), ...crate.split('')])
+            cratesMap.set(position, [...Array.from(cratesMap.get(position)), ...crate.split('')])
         });
     });
     return cratesMap;
